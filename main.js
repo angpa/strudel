@@ -1,4 +1,5 @@
 import { initStrudel } from '@strudel/web';
+import { getAudioContext } from '@strudel/webaudio';
 import '@strudel/repl';
 
 import { initDepecheModeKit } from './depecheModeKit.js';
@@ -28,6 +29,7 @@ initStrudel().then(() => {
 
 // ── Play ──
 playBtn.addEventListener('click', async () => {
+  getAudioContext().resume();
   if (editorEl && editorEl.editor) {
     statusEl.textContent = '▶ Reproduciendo...';
     statusEl.className = 'playing';

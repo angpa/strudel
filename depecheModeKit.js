@@ -39,8 +39,8 @@ export function initDepecheModeKit() {
     osc1.connect(filter);
     osc2.connect(filter);
     filter.connect(gainNode);
-    // Para conectar al destino principal de Strudel, onended es llamado cuando termina
-    gainNode.connect(ctx.destination);
+    // Para conectar al destino principal de Strudel, retornamos el nodo
+    // gainNode.connect(ctx.destination); // NO hacer esto, Strudel se encarga
 
     // Iniciar y detener
     osc1.start(time);
@@ -56,6 +56,8 @@ export function initDepecheModeKit() {
       gainNode.disconnect();
       onended();
     }, (duration + release) * 1000 + 100);
+
+    return { node: gainNode };
   });
 
   // ── 2. Peter Gordeno Bass (Bajo de Sintetizador) ──
@@ -85,7 +87,7 @@ export function initDepecheModeKit() {
 
     osc.connect(filter);
     filter.connect(gainNode);
-    gainNode.connect(ctx.destination);
+    // gainNode.connect(ctx.destination); // Strudel lo conecta
 
     osc.start(time);
     osc.stop(time + duration + release);
@@ -96,6 +98,8 @@ export function initDepecheModeKit() {
       gainNode.disconnect();
       onended();
     }, (duration + release) * 1000 + 100);
+
+    return { node: gainNode };
   });
 
   // ── 3. Instrumentos Acústicos y Samplers (Christian Eigner / Martin Gore) ──
