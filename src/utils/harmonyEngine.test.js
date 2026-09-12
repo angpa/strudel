@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { mutateNote, getNoteColor, SCALES, getScaleNotes, getHarmonicSuggestions, getMunsellColor } from './harmonyEngine.js';
+import { mutateNote, getNoteColor, SCALES, getScaleNotes, getHarmonicSuggestions, getMunsellColor, getTonnetzGrid } from './harmonyEngine.js';
 
 test('mutates note up the scale (C Major)', () => {
   // C Major: C, D, E, F, G, A, B
@@ -55,5 +55,23 @@ test('getHarmonicSuggestions maps all 12 chromatic intervals correctly', () => {
   expect(suggestions['g3'].relation).toBe('5ta justa (P5)');
   expect(suggestions['c4'].relation).toBe('8va (Octave)');
 });
+
+test('getTonnetzGrid calculates 2D Tonnetz lattice with fifths and thirds', () => {
+  const grid = getTonnetzGrid(3, 3, 'c');
+  expect(grid.length).toBe(9); // 3x3 grid
+  
+  // Center node at (0,0) should be 'c'
+  const centerNode = grid.find(n => n.x === 0 && n.y === 0);
+  expect(centerNode.pitch).toBe('c');
+
+  // Node to the right (x=1, y=0) should be perfect fifth above C -> G
+  const fifthNode = grid.find(n => n.x === 1 && n.y === 0);
+  expect(fifthNode.pitch).toBe('g');
+
+  // Node diagonally up (x=0, y=1) should be major third above C -> E
+  const thirdNode = grid.find(n => n.x === 0 && n.y === 1);
+  expect(thirdNode.pitch).toBe('e');
+});
+
 
 

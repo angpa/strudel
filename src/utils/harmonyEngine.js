@@ -180,4 +180,31 @@ export function getHarmonicSuggestions(activeNoteStr, rootNote = 'c', scaleType 
   return suggestions;
 }
 
+export function getTonnetzGrid(cols = 5, rows = 5, centerPitch = 'c') {
+  const nodes = [];
+  const rootOffset = NOTE_OFFSETS[centerPitch.toLowerCase()] ?? 0;
+  
+  const halfCols = Math.floor(cols / 2);
+  const halfRows = Math.floor(rows / 2);
 
+  for (let r = -halfRows; r <= halfRows; r++) {
+    for (let c = -halfCols; c <= halfCols; c++) {
+      // x axis = Perfect Fifths (+7 semitones per step)
+      // y axis = Major Thirds (+4 semitones per step)
+      const semitoneOffset = (rootOffset + (c * 7) + (r * 4)) % 12;
+      const normalizedOffset = (semitoneOffset + 12) % 12;
+      const pitch = OFFSET_TO_NOTE[normalizedOffset];
+      const noteStr = `${pitch}3`;
+
+      nodes.push({
+        x: c,
+        y: r,
+        pitch,
+        noteStr,
+        munsellColor: getMunsellColor(pitch)
+      });
+    }
+  }
+
+  return nodes;
+}

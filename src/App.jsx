@@ -3,6 +3,7 @@ import TrackMixer from './components/TrackMixer';
 import SnapshotManager from './components/SnapshotManager';
 import SpectrumCanvas from './components/SpectrumCanvas';
 import AccordionKeyboard from './components/AccordionKeyboard';
+import TonnetzVisualizer from './components/TonnetzVisualizer';
 import { audioSystem } from './audioSystem';
 import { Play, Square, Settings2 } from 'lucide-react';
 
@@ -13,6 +14,7 @@ export default function App() {
   const [bpm, setBpm] = useState(113);
   const [rootNote, setRootNote] = useState('eb');
   const [scaleType, setScaleType] = useState('harmonicMinor');
+  const [showTonnetz, setShowTonnetz] = useState(true);
   
   // INIT PATCH
   const [tracks, setTracks] = useState([
@@ -88,6 +90,9 @@ export default function App() {
     });
   };
 
+  // Extract active notes playing across all tracks
+  const activeNotesList = tracks.flatMap(t => t.steps.flatMap(s => s));
+
   return (
     <div className="min-h-screen bg-[#020205] text-slate-300 font-sans selection:bg-indigo-500/30">
       {/* BACKGROUND DECORATION */}
@@ -131,7 +136,14 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setShowTonnetz(!showTonnetz)}
+              className={`text-xs px-3 py-2 rounded-xl border font-mono transition-all ${showTonnetz ? 'bg-indigo-600/40 border-indigo-400 text-indigo-200' : 'bg-slate-800/40 border-slate-700 text-slate-400 hover:text-white'}`}
+            >
+              {showTonnetz ? '🕸️ Tonnetz (Activo)' : '🕸️ Ver Tonnetz'}
+            </button>
+
             <SpectrumCanvas />
             <div className="h-10 w-px bg-white/10" />
             <div className="flex gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
@@ -152,6 +164,14 @@ export default function App() {
         </div>
         </header>
 
+        {/* TONNETZ VISUALIZER (JAMS 2024 - DANIEL K. S. WALDEN) */}
+        {showTonnetz && (
+          <TonnetzVisualizer 
+            rootNote={rootNote} 
+            activeNotes={activeNotesList} 
+          />
+        )}
+
         {/* ACCORDION KEYBOARD & HARMONIC ASSISTANT */}
         <AccordionKeyboard 
           keyNote={rootNote} 
@@ -161,6 +181,7 @@ export default function App() {
 
         {/* MAIN GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
 
           {/* LEFT: MIXER */}
           <div className="lg:col-span-3 space-y-6">
