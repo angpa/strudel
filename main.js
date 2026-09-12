@@ -1,11 +1,17 @@
 import { initStrudel, evaluate, hush } from '@strudel/web';
 
+// ── Elementos del DOM ──
 const statusEl = document.getElementById('status');
 const playBtn = document.getElementById('play');
 const stopBtn = document.getElementById('stop');
 const codeInput = document.getElementById('code');
+const gitInfo = document.getElementById('git-info');
 
-// Inicializar strudel y esperar a que esté listo
+// ── Git version badge ──
+// __GIT_HASH__, __GIT_COUNT__, __GIT_MESSAGE__ se inyectan por vite.config.js
+gitInfo.innerHTML = `push <span>#${__GIT_COUNT__}</span> · <span>${__GIT_HASH__}</span> · ${__GIT_MESSAGE__}`;
+
+// ── Inicializar Strudel ──
 statusEl.textContent = 'Inicializando Strudel...';
 const ready = initStrudel();
 
@@ -16,9 +22,9 @@ ready.then(() => {
   statusEl.className = 'error';
 });
 
+// ── Play ──
 playBtn.addEventListener('click', async () => {
   try {
-    // Asegurarse de que strudel esté completamente inicializado
     await ready;
     statusEl.textContent = '▶ Reproduciendo...';
     statusEl.className = 'playing';
@@ -30,6 +36,7 @@ playBtn.addEventListener('click', async () => {
   }
 });
 
+// ── Stop ──
 stopBtn.addEventListener('click', () => {
   hush();
   statusEl.textContent = '■ Detenido.';
