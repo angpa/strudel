@@ -1,6 +1,13 @@
-import { registerSound, getAudioContext, samples } from '@strudel/webaudio';
-
 export function initDepecheModeKit() {
+  const registerSound = window.registerSound;
+  const samples = window.samples;
+  const getAudioContext = window.getAudioContext;
+
+  if (!registerSound || !samples || !getAudioContext) {
+    console.error("Strudel globals not found. Make sure @strudel/repl is loaded.");
+    return;
+  }
+
   const ctx = getAudioContext();
 
   // ── 1. Alan Wilder Choir (Pad Vocal Sintetizado) ──

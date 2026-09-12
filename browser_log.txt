@@ -1,0 +1,8 @@
+
+    window.registerSound: function
+    window.samples: function
+    window.getAudioContext: function
+    window.audioContext: undefined
+    window.strudel: undefined
+    editorEl.editor: object
+  
