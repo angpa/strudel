@@ -1,6 +1,8 @@
 import { initStrudel } from '@strudel/web';
 import '@strudel/repl';
 
+import { initDepecheModeKit } from './depecheModeKit.js';
+
 // ── Elementos del DOM ──
 const statusEl = document.getElementById('status');
 const playBtn = document.getElementById('play');
@@ -10,6 +12,9 @@ const editorEl = document.querySelector('strudel-editor');
 
 // ── Git version badge ──
 gitInfo.innerHTML = `push <span>#${__GIT_COUNT__}</span> · <span>${__GIT_HASH__}</span> · ${__GIT_MESSAGE__}`;
+
+// ── Inicializar Instrumentos Personalizados ──
+initDepecheModeKit();
 
 // ── Inicializar Strudel ──
 statusEl.textContent = 'Inicializando Strudel...';

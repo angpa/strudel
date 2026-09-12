@@ -79,94 +79,50 @@
     <strudel-editor id="code">
       <!--
 // ═══════════════════════════════════════════════════
-// Enjoy the Silence — Depeche Mode (Martin Gore)
-// Eb minor · 113 BPM · Arreglo multi-capa
+// Enjoy the Silence — Depeche Mode
+// Eb minor · 113 BPM · Depeche Mode Custom Kit
 // ═══════════════════════════════════════════════════
-// 6 capas: Pad · Melodía · Bajo · Arpegio · Kick · Perc
-// Progresión: Ebm → B(Cb) → Gb → Db  (i-bVI-bIII-bVII)
-// Cada ciclo = 1 compás. cpm(28.25) = 113 BPM en 4/4
+// Instrumentos usados:
+// alan_wilder_choir, martin_gore_guitar, peter_gordeno_bass, christian_eigner_kick, christian_eigner_snare, christian_eigner_hihat
 
 stack(
 
-  // ═══ CAPA 1: SYNTH PAD (acordes cálidos) ═══
-  // Sawtooth filtrado, ataque lento, ganancia baja
+  // ═══ ALAN WILDER (Choir Pad) ═══
   note("<[eb3,gb3,bb3] [b2,eb3,gb3] [gb3,bb3,db4] [db3,f3,ab3]>")
-    .s("sawtooth")
-    .cutoff(650).resonance(2)
-    .attack(0.5).decay(0.6).sustain(0.7).release(1.2)
-    .gain(0.12)
-    .room(0.5),
+    .s("alan_wilder_choir")
+    .cutoff(1200)
+    .room(0.8)
+    .gain(0.6),
 
-  // ═══ CAPA 2: MELODÍA PRINCIPAL ═══
-  // Triangle limpio con delay (eco característico de DM)
+  // ═══ MARTIN GORE (Guitarra Principal) ═══
+  // Melodía principal usando el sampler de guitarra
   cat(
-    // Intro (4 compases) — solo pad + arpegio
-    "~", "~", "~", "~",
-
-    // Verso (8 compases)
-    "~ ~ bb4 bb4",           // "Words like"
-    "ab4 gb4 ~ ~",           // "violence"
-    "~ ~ ab4 bb4",           // "break the"
-    "~ ~ ~ ~",               // "silence"
-    "~ ~ gb4 gb4",           // "Come crash-"
-    "gb4 ab4 bb4 ~",         // "ing in"
-    "db5 bb4 ab4 ~",         // "into my little"
-    "~ ~ ~ ~",               // "world"
-
-    // Estribillo (8 compases)
-    "bb4 ~ db5 eb5",         // "All I ever"
-    "db5 bb4 ~ ~",           // "wanted"
-    "bb4 ~ db5 eb5",         // "All I ever"
-    "db5 bb4 ~ ~",           // "needed"
-    "eb5 ~ db5 bb4",         // "Is here"
-    "~ ~ ~ ~",
-    "ab4 bb4 ~ ~",           // "in my arms"
-    "~ ~ ~ ~",
-
-    // Outro (4 compases) — melodía se desvanece
-    "~ bb4 ab4 gb4",
-    "ab4 bb4 ~ ~",
-    "~ ~ ~ ~",
+    "~ ~ bb4 bb4",           
+    "ab4 gb4 ~ ~",           
+    "~ ~ ab4 bb4",           
     "~ ~ ~ ~"
   )
-  .s("triangle")
-  .cutoff(2500).resonance(3)
-  .attack(0.02).decay(0.35).sustain(0.3).release(0.6)
-  .gain(0.35)
-  .room(0.3)
-  .delay(0.25).delaytime(0.33),
+  .s("martin_gore_guitar")
+  .delay(0.25).delaytime(0.33)
+  .gain(0.8)
+  .room(0.4),
 
-  // ═══ CAPA 3: BAJO SINTETIZADO ═══
-  // Raíces de acordes pulsando (negra-silencio-negra-silencio)
-  note("<[eb2 ~ eb2 ~] [b1 ~ b1 ~] [gb2 ~ gb2 ~] [db2 ~ db2 ~]>")
-    .s("sawtooth")
-    .cutoff(250).resonance(4)
-    .attack(0.01).decay(0.2).sustain(0.55).release(0.3)
-    .gain(0.4),
+  // ═══ PETER GORDENO (Bajo Sintetizado) ═══
+  // Raíces pulsando en corcheas
+  note("<[eb2 eb2 eb2 eb2] [b1 b1 b1 b1] [gb2 gb2 gb2 gb2] [db2 db2 db2 db2]>")
+    .s("peter_gordeno_bass")
+    .cutoff(800)
+    .gain(0.7),
 
-  // ═══ CAPA 4: ARPEGIO (textura rítmica) ═══
-  // 16avos recorriendo notas del acorde, square wave filtrado
-  note("<[eb4 gb4 bb4 gb4]*4 [b3 eb4 gb4 eb4]*4 [gb4 bb4 db5 bb4]*4 [db4 f4 ab4 f4]*4>")
-    .s("square")
-    .cutoff(1000).resonance(3)
-    .attack(0.005).decay(0.08).sustain(0).release(0.05)
-    .gain(0.12)
-    .delay(0.15).delaytime(0.125),
-
-  // ═══ CAPA 5: KICK (sintetizado) ═══
-  // Sine wave grave con decay corto: beats 1 y 3
-  note("eb1 ~ eb1 ~")
-    .s("sine")
-    .decay(0.12).sustain(0)
-    .gain(0.5),
-
-  // ═══ CAPA 6: PERCUSIÓN (sintetizada) ═══
-  // Click agudo en beats 2 y 4 (simula clap/snare)
-  note("~ e5 ~ e5")
-    .s("square")
-    .cutoff(5000)
-    .decay(0.04).sustain(0)
-    .gain(0.1)
+  // ═══ CHRISTIAN EIGNER (Batería Acústica / Híbrida) ═══
+  // Kick en 1 y 3 (o four-on-the-floor)
+  s("christian_eigner_kick(4,4)").gain(1.0),
+  
+  // Snare en 2 y 4
+  s("~ christian_eigner_snare ~ christian_eigner_snare").gain(0.9),
+  
+  // Hi-hats en corcheas (16avos)
+  s("christian_eigner_hihat*8").gain(0.5).room(0.1)
 
 ).cpm(28.25)
       -->
