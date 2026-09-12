@@ -1,19 +1,25 @@
 import { expect, test } from 'vitest';
-import { mutateNote, getNoteColor } from './harmonyEngine.js';
+import { mutateNote, getNoteColor, SCALES } from './harmonyEngine.js';
 
-test('mutates note up the scale', () => {
-  expect(mutateNote('eb3', 1)).toBe('f3');
-  expect(mutateNote('f3', 1)).toBe('gb3');
-  expect(mutateNote('b3', 1)).toBe('d4'); // octave up
+test('mutates note up the scale (C Major)', () => {
+  // C Major: C, D, E, F, G, A, B
+  expect(mutateNote('c3', 1, 'c', 'major')).toBe('d3');
+  expect(mutateNote('e3', 1, 'c', 'major')).toBe('f3');
+  expect(mutateNote('b3', 1, 'c', 'major')).toBe('c4'); // octave up
 });
 
-test('mutates note down the scale', () => {
-  expect(mutateNote('f3', -1)).toBe('eb3');
-  expect(mutateNote('eb3', -1)).toBe('d3'); // below Eb3 is D3
+test('mutates note down the scale (C Major)', () => {
+  expect(mutateNote('f3', -1, 'c', 'major')).toBe('e3');
+  expect(mutateNote('c3', -1, 'c', 'major')).toBe('b2'); // octave down
+});
+
+test('mutates note in Eb Minor Harmonic', () => {
+  expect(mutateNote('eb3', 1, 'eb', 'harmonicMinor')).toBe('f3');
+  expect(mutateNote('eb3', -1, 'eb', 'harmonicMinor')).toBe('d3'); 
 });
 
 test('ignores rests', () => {
-  expect(mutateNote('~', 1)).toBe('~');
+  expect(mutateNote('~', 1, 'c', 'major')).toBe('~');
 });
 
 test('getNoteColor returns valid tailwind colors', () => {

@@ -5,12 +5,18 @@ import SpectrumCanvas from './components/SpectrumCanvas';
 import { audioSystem } from './audioSystem';
 import { Play, Square, Settings2 } from 'lucide-react';
 
+import { SCALES } from './utils/harmonyEngine';
+
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [bpm, setBpm] = useState(113);
+  const [rootNote, setRootNote] = useState('eb');
+  const [scaleType, setScaleType] = useState('harmonicMinor');
+  
+  // INIT PATCH
   const [tracks, setTracks] = useState([
-    { id: 'bass', instrument: 'peter_gordeno_bass', gain: 0.7, fx: { cutoff: 1000, room: 0, delay: 0 }, steps: [['eb2'], ['eb2'], ['b1'], ['db2']] },
-    { id: 'synth', instrument: 'alan_wilder_choir', gain: 0.5, fx: { cutoff: 1500, room: 0.8, delay: 0 }, steps: [['eb3', 'gb3'], ['b2', 'eb3'], ['gb3', 'bb3'], ['db3', 'f3']] },
-    { id: 'drums', instrument: 'christian_eigner_kick', gain: 0.9, fx: { cutoff: 20000, room: 0.1, delay: 0 }, steps: [['~'], ['~'], ['~'], ['~']] }
+    { id: 'beat', instrument: 'bd', gain: 0.9, fx: { cutoff: 20000, room: 0.1, delay: 0 }, steps: [['c2'], ['~'], ['c2'], ['~']] },
+    { id: 'synth', instrument: 'supersaw', gain: 0.5, fx: { cutoff: 1500, room: 0.8, delay: 0 }, steps: [['eb3', 'gb3'], ['b2', 'eb3'], ['gb3', 'bb3'], ['db3', 'f3']] }
   ]);
   const editorRef = useRef(null);
 
@@ -47,14 +53,25 @@ export default function App() {
       code += `const ${trackVarName} = note("<${patternInner}>").s("${track.instrument}")${fxString};\n`;
     });
 
-    code += `\nconst master = stack(${trackNames.join(', ')}).cpm(28.25);\nmaster\n`;
+    const cpm = bpm / 4;
+    code += `\nconst master = stack(${trackNames.join(', ')}).cpm(${cpm});\nmaster\n`;
     
     // Inject and evaluate silently if playing
     editorRef.current.editor.code = code;
     if (isPlaying) {
       editorRef.current.editor.evaluate();
     }
-  }, [tracks, isPlaying]);
+  }, [tracks, isPlaying, bpm]);
+
+  const handleAddTrack = () => {
+    setTracks([...tracks, { 
+      id: `track-${tracks.length + 1}`, 
+      instrument: 'piano', 
+      gain: 0.8, 
+      fx: { cutoff: 20000, room: 0, delay: 0 }, 
+      steps: [['c3'], ['~'], ['~'], ['~']] 
+    }]);
+  };
 
   return (
     <div className="min-h-screen bg-[#020205] text-slate-300 font-sans selection:bg-indigo-500/30">
@@ -67,13 +84,35 @@ export default function App() {
       <main className="relative max-w-7xl mx-auto px-6 py-8">
         {/* TOP BAR */}
         <header className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-              <Settings2 className="text-white" size={20} />
+        {/* HEADER CONTROLS */}
+        <div className="flex flex-col md:flex-row justify-between items-center bg-black/40 p-4 lg:p-6 rounded-2xl border border-white/5 backdrop-blur-md mb-8 gap-6 shadow-2xl">
+          <div className="flex items-center gap-6">
+            {/* Play Button */}
+            <div className="relative group">
+              <div className={`absolute -inset-2 rounded-full blur opacity-20 group-hover:opacity-100 transition-opacity ${isPlaying ? 'bg-green-500' : 'bg-indigo-500'}`}></div>
+              <button 
+                onClick={() => { audioSystem.play(); setIsPlaying(true); }}
+                className={`p-3 rounded-xl transition-all relative ${isPlaying ? 'bg-green-500 text-black shadow-lg shadow-green-500/40' : 'hover:bg-white/5'}`}
+              >
+                <Play size={20} fill={isPlaying ? "currentColor" : "none"} />
+              </button>
             </div>
-            <div>
-              <h1 className="text-xl font-black tracking-tight text-white">STRUDEL <span className="text-indigo-500">MIXER</span></h1>
-              <p className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Hybrid Live Coding Environment</p>
+            
+            {/* Transport Info */}
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 tracking-tight">Strudel Web DAW</h1>
+              <div className="flex gap-2 text-xs text-slate-400 font-mono items-center mt-1">
+                <span>BPM:</span>
+                <input type="number" value={bpm} onChange={e => setBpm(Number(e.target.value))} className="bg-transparent border-b border-slate-600 w-12 text-white outline-none" />
+                <span className="mx-2">•</span>
+                <span>KEY:</span>
+                <select value={rootNote} onChange={e => setRootNote(e.target.value)} className="bg-transparent text-white border-b border-slate-600 outline-none">
+                  {['c','cs','d','eb','e','f','fs','g','ab','a','bb','b'].map(n => <option key={n} value={n} className="bg-slate-900">{n.toUpperCase()}</option>)}
+                </select>
+                <select value={scaleType} onChange={e => setScaleType(e.target.value)} className="bg-transparent text-white border-b border-slate-600 outline-none ml-1">
+                  {Object.keys(SCALES).map(s => <option key={s} value={s} className="bg-slate-900">{s}</option>)}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -95,21 +134,29 @@ export default function App() {
               </button>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* MAIN GRID */}
-        <div className="grid grid-cols-12 gap-8">
-          {/* LEFT: MIXER (8 cols) */}
-          <div className="col-span-9 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* LEFT: MIXER */}
+          <div className="lg:col-span-3 space-y-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Sequencer</h2>
+              <button onClick={handleAddTrack} className="text-xs px-3 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 rounded-lg transition-colors border border-indigo-500/30">
+                + Add Track
+              </button>
+            </div>
             <TrackMixer 
               editorRef={editorRef} 
               tracks={tracks} 
               setTracks={setTracks} 
+              rootNote={rootNote} 
+              scaleType={scaleType} 
             />
           </div>
 
-          {/* RIGHT: SIDEBAR (3 cols) */}
-          <div className="col-span-3 space-y-6">
+          {/* RIGHT: SIDEBAR */}
+          <div className="lg:col-span-1 space-y-6">
             <SnapshotManager 
               currentTracks={tracks} 
               onRestore={(savedData) => {
