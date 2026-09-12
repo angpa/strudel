@@ -1,138 +1,97 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Play, Square } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import TrackMixer from './components/TrackMixer';
+import SnapshotManager from './components/SnapshotManager';
+import SpectrumCanvas from './components/SpectrumCanvas';
 import { audioSystem } from './audioSystem';
+import { Play, Square, Settings2 } from 'lucide-react';
 
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [status, setStatus] = useState('Initializing Instruments...');
+  const [tracks, setTracks] = useState([
+    { id: 'bass', instrument: 'peter_gordeno_bass', gain: 0.7, steps: [['eb2'], ['eb2'], ['b1'], ['db2']] },
+    { id: 'synth', instrument: 'alan_wilder_choir', gain: 0.5, steps: [['eb3', 'gb3'], ['b2', 'eb3'], ['gb3', 'bb3'], ['db3', 'f3']] },
+    { id: 'drums', instrument: 'christian_eigner_kick', gain: 0.9, steps: [['~'], ['~'], ['~'], ['~']] }
+  ]);
   const editorRef = useRef(null);
-  
-  useEffect(() => {
-    try {
-      audioSystem.init();
-      setStatus('Ready. Press Play to listen.');
-    } catch (err) {
-      setStatus(`Error: ${err.message}`);
-    }
-  }, []);
-
-  const handlePlay = async () => {
-    const success = await audioSystem.play();
-    if (success) {
-      setIsPlaying(true);
-      setStatus('▶ Playing...');
-    }
-  };
-
-  const handleStop = () => {
-    const success = audioSystem.stop();
-    if (success) {
-      setIsPlaying(false);
-      setStatus('■ Stopped.');
-    }
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#080810] via-[#12121f] to-[#0d0d1a] text-slate-300 flex flex-col items-center py-10 px-4">
-      {/* Header */}
-      <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent">
-          🎹 Enjoy The Silence
-        </h1>
-        <p className="text-slate-500 text-sm mt-1 font-light">
-          Depeche Mode · Martin Gore · Strudel Live Coding Cover
-        </p>
-      </header>
-
-      {/* Controls */}
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={handlePlay}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold bg-gradient-to-br from-green-400 to-green-600 text-green-950 hover:brightness-110 active:translate-y-px transition-all"
-        >
-          <Play size={18} /> Play
-        </button>
-        <button
-          onClick={handleStop}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold bg-gradient-to-br from-red-400 to-red-600 text-white hover:brightness-110 active:translate-y-px transition-all"
-        >
-          <Square size={18} fill="currentColor" /> Stop
-        </button>
+    <div className="min-h-screen bg-[#020205] text-slate-300 font-sans selection:bg-indigo-500/30">
+      {/* BACKGROUND DECORATION */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-900/20 blur-[120px] rounded-full" />
+        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-purple-900/10 blur-[100px] rounded-full" />
       </div>
 
-      <p className="text-slate-500 text-xs uppercase tracking-widest mb-2">
-        Strudel Code · Live Editable
-      </p>
+      <main className="relative max-w-7xl mx-auto px-6 py-8">
+        {/* TOP BAR */}
+        <header className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <Settings2 className="text-white" size={20} />
+            </div>
+            <div>
+              <h1 className="text-xl font-black tracking-tight text-white">STRUDEL <span className="text-indigo-500">MIXER</span></h1>
+              <p className="text-[10px] text-slate-500 font-mono tracking-widest uppercase">Hybrid Live Coding Environment</p>
+            </div>
+          </div>
 
-      {/* Editor Container */}
-      <div className="w-full max-w-4xl relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur-xl group-hover:blur-2xl transition-all opacity-50"></div>
-        <div className="relative rounded-xl overflow-hidden border border-indigo-500/20 shadow-2xl bg-[#0c0c16]">
-          <strudel-editor ref={editorRef} style={{ display: 'none' }}>
-            {`<!--
-// ═══════════════════════════════════════════════════
-// Enjoy the Silence — Depeche Mode
-// Eb minor · 113 BPM · Depeche Mode Custom Kit
-// ═══════════════════════════════════════════════════
+          <div className="flex items-center gap-6">
+            <SpectrumCanvas />
+            <div className="h-10 w-px bg-white/10" />
+            <div className="flex gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+              <button 
+                onClick={() => { audioSystem.play(); setIsPlaying(true); }}
+                className={`p-3 rounded-xl transition-all ${isPlaying ? 'bg-green-500 text-black shadow-lg shadow-green-500/40' : 'hover:bg-white/5'}`}
+              >
+                <Play size={20} fill={isPlaying ? "currentColor" : "none"} />
+              </button>
+              <button 
+                onClick={() => { audioSystem.stop(); setIsPlaying(false); }}
+                className="p-3 rounded-xl hover:bg-white/5 transition-all text-red-500"
+              >
+                <Square size={20} fill="currentColor" />
+              </button>
+            </div>
+          </div>
+        </header>
 
-// ═══ ALAN WILDER (Choir Pad) ═══
-const base01 = note("<[eb3,gb3,bb3] [b2,eb3,gb3] [gb3,bb3,db4] [db3,f3,ab3]>")
-  .s("alan_wilder_choir")
-  .cutoff(1500)
-  .room(0.8)
-  .gain(0.6);
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-12 gap-8">
+          {/* LEFT: MIXER (8 cols) */}
+          <div className="col-span-9 space-y-6">
+            <TrackMixer 
+              editorRef={editorRef} 
+              tracks={tracks} 
+              setTracks={setTracks} 
+            />
+          </div>
 
-// ═══ MARTIN GORE (Guitarra Principal) ═══
-const arpegio01 = note("<[~ ~ bb4 bb4] [ab4 gb4 ~ ~] [~ ~ ab4 bb4] [~ ~ ~ ~]>")
-  .s("martin_gore_guitar")
-  .delay(0.25).delaytime(0.33)
-  .gain(0.8)
-  .room(0.4);
-
-// ═══ PETER GORDENO (Bajo Sintetizado) ═══
-const bajo01 = note("<[eb2 eb2 eb2 eb2] [b1 b1 b1 b1] [gb2 gb2 gb2 gb2] [db2 db2 db2 db2]>")
-  .s("peter_gordeno_bass")
-  .cutoff(1000)
-  .gain(0.7);
-
-// ═══ CHRISTIAN EIGNER (Batería Acústica / Híbrida) ═══
-const ritmo01 = stack(
-  s("christian_eigner_kick(4,4)").gain(1.0),
-  s("~ christian_eigner_snare ~ christian_eigner_snare").gain(0.9),
-  s("christian_eigner_hihat*8").gain(0.5).room(0.1)
-);
-
-// ═══ ENSAMBLE FINAL ═══
-const pista01 = stack(
-  base01,
-  arpegio01,
-  bajo01,
-  ritmo01
-).cpm(28.25);
-
-pista01
-            -->`}
-          </strudel-editor>
-          {/* We inject our Strudel editor contents directly in the React tree, 
-              but remember the web component itself creates a sibling div!
-              To correctly structure this in React without layout breaks, 
-              we can just inject the raw custom element and let it do its thing. 
-              The CSS in index.css will handle styling the sibling. */}
+          {/* RIGHT: SIDEBAR (3 cols) */}
+          <div className="col-span-3 space-y-6">
+            <SnapshotManager 
+              currentTracks={tracks} 
+              onRestore={(savedData) => {
+                setTracks(savedData);
+                // Forzar re-evaluación en el editor oculto
+                // (Implementar lógica de sync aquí)
+              }} 
+            />
+            
+            <div className="p-6 bg-gradient-to-b from-indigo-500/10 to-transparent rounded-3xl border border-indigo-500/10">
+              <h4 className="text-[10px] font-bold text-indigo-400 uppercase mb-4">Master Info</h4>
+              <div className="space-y-3 text-xs">
+                <div className="flex justify-between"><span className="text-slate-500">Engine</span><span className="text-slate-300">Superdough</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Latency</span><span className="text-slate-300">Low (AudioWorklet)</span></div>
+                <div className="flex justify-between"><span className="text-slate-500">Mode</span><span className="text-green-500 font-bold">Quantized</span></div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
 
-      {/* Footer / Status */}
-      <div className="flex justify-between items-center w-full max-w-4xl mt-4">
-        <p className={`text-sm ${isPlaying ? 'text-green-400' : 'text-slate-400'}`}>
-          {status}
-        </p>
-        <div className="font-mono text-[10px] text-indigo-300/60 bg-[#0e0e1a] border border-indigo-500/20 px-3 py-1 rounded-md">
-          {typeof __GIT_COUNT__ !== 'undefined' ? (
-            <>push <span className="text-indigo-400">#{__GIT_COUNT__}</span> · {__GIT_HASH__}</>
-          ) : (
-            'Development Mode'
-          )}
-        </div>
+      {/* STRUDEL ENGINE (HIDDEN) */}
+      <div className="sr-only">
+        <strudel-editor ref={editorRef}></strudel-editor>
       </div>
     </div>
   );

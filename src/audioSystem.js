@@ -3,8 +3,8 @@ import '@strudel/repl/index.mjs'; // MUST import from source to deduplicate supe
 import { initDepecheModeKit } from './depecheModeKit.js';
 
 class AudioSystem {
-  constructor() {
-    this.editorEl = document.querySelector('strudel-editor');
+  get editorEl() {
+    return document.querySelector('strudel-editor');
   }
 
   init() {
