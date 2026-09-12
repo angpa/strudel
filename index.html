@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enjoy The Silence - Strudel</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #0d0d0d;
+        color: #e0e0e0;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+      h1 { font-size: 1.6rem; margin-bottom: 0.3rem; color: #fff; }
+      .subtitle { color: #888; margin-bottom: 1.5rem; font-size: 0.9rem; }
+      .controls { display: flex; gap: 10px; margin-bottom: 1rem; }
+      button {
+        padding: 10px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: opacity 0.2s;
+      }
+      button:hover { opacity: 0.85; }
+      #play { background: #4caf50; color: white; }
+      #stop { background: #f44336; color: white; }
+      textarea {
+        width: 100%;
+        height: 320px;
+        font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: 16px;
+        background: #1a1a2e;
+        color: #a8ff60;
+        border: 1px solid #333;
+        border-radius: 8px;
+        resize: vertical;
+        tab-size: 2;
+      }
+      textarea:focus { outline: 1px solid #4caf50; }
+      #status { margin-top: 0.8rem; font-size: 0.85rem; color: #888; }
+      #status.playing { color: #4caf50; }
+      #status.error { color: #f44336; }
+    </style>
+  </head>
+  <body>
+    <h1>🎹 Enjoy The Silence — Depeche Mode</h1>
+    <p class="subtitle">Strudel live coding cover · Edita el código y presiona Play</p>
+
+    <div class="controls">
+      <button id="play">▶ Play</button>
+      <button id="stop">■ Stop</button>
+    </div>
+
+    <textarea id="code" spellcheck="false">// Enjoy The Silence - Depeche Mode (Strudel cover)
+// BPM ~113, Key: Eb minor
+
+stack(
+  // === BASS LINE (sintetizador grave) ===
+  note("eb2 eb2 eb2 eb2  cb2 cb2 cb2 cb2  gb2 gb2 gb2 gb2  db2 db2 db2 db2")
+    .s("sawtooth")
+    .cutoff(600)
+    .resonance(8)
+    .decay(0.2)
+    .sustain(0.3)
+    .gain(0.6),
+
+  // === SYNTH PAD (acordes atmosféricos) ===
+  note("<[eb3,gb3,bb3] [cb3,eb3,gb3] [gb3,bb3,db4] [db3,f3,ab3]>")
+    .s("sawtooth")
+    .cutoff(1200)
+    .attack(0.3)
+    .decay(0.5)
+    .sustain(0.6)
+    .release(0.8)
+    .gain(0.25)
+    .room(0.6),
+
+  // === MELODÍA PRINCIPAL (el riff icónico) ===
+  note("eb4 ~ gb4 ~ bb4 gb4 eb4 ~  db4 ~ eb4 ~ gb4 eb4 db4 ~")
+    .s("triangle")
+    .cutoff(2000)
+    .decay(0.3)
+    .sustain(0.2)
+    .gain(0.45)
+    .delay(0.3)
+    .delaytime(0.375)
+    .room(0.4)
+
+).cpm(113)</textarea>
+
+    <p id="status">Listo. Presiona Play para escuchar.</p>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
