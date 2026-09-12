@@ -1,6 +1,5 @@
-import { initStrudel, getAudioContext } from '@strudel/web';
-import '@strudel/repl';
-
+import { getAudioContext } from '@strudel/webaudio';
+import '@strudel/repl/index.mjs'; // Usamos la fuente original para que Vite no duplique módulos
 import { initDepecheModeKit } from './depecheModeKit.js';
 
 // ── Elementos del DOM ──
@@ -16,16 +15,17 @@ if (typeof __GIT_COUNT__ !== 'undefined') {
 }
 
 // ── Inicializar Strudel ──
-statusEl.textContent = 'Inicializando Strudel...';
+statusEl.textContent = 'Inicializando Instrumentos...';
 
-initStrudel().then(() => {
-  // Inicializar instrumentos Depeche Mode una vez que Strudel está cargado
+try {
+  // Ahora inicializamos el kit de forma síncrona/directa ya que estamos compartiendo
+  // el mismo módulo '@strudel/webaudio' con el repl.
   initDepecheModeKit();
   statusEl.textContent = 'Listo. Presiona Play para escuchar.';
-}).catch((err) => {
+} catch (err) {
   statusEl.textContent = 'Error al inicializar: ' + err.message;
   statusEl.className = 'error';
-});
+}
 
 // ── Play ──
 playBtn.addEventListener('click', async () => {
@@ -33,12 +33,6 @@ playBtn.addEventListener('click', async () => {
     const ctx = getAudioContext();
     if (ctx && ctx.state === 'suspended') {
       await ctx.resume();
-    }
-    if (window.getAudioContext) {
-      const wCtx = window.getAudioContext();
-      if (wCtx && wCtx.state === 'suspended') {
-        await wCtx.resume();
-      }
     }
   } catch (e) {
     console.warn('AudioContext resume exception:', e);

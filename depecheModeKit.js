@@ -1,13 +1,6 @@
+import { registerSound, samples, getAudioContext } from '@strudel/webaudio';
+
 export function initDepecheModeKit() {
-  const registerSound = window.registerSound;
-  const samples = window.samples;
-  const getAudioContext = window.getAudioContext;
-
-  if (!registerSound || !samples || !getAudioContext) {
-    console.error("Strudel globals not found on window. Ensure initStrudel() has finished before calling this.");
-    return;
-  }
-
   // ── 1. Alan Wilder Choir (Pad Vocal Sintetizado) ──
   registerSound('alan_wilder_choir', (time, value, onended) => {
     const ctx = getAudioContext();
@@ -60,7 +53,7 @@ export function initDepecheModeKit() {
       osc2.disconnect();
       filter.disconnect();
       gainNode.disconnect();
-      onended();
+      if (onended) onended();
     }, (duration + release) * 1000 + 100);
 
     return { node: gainNode };
@@ -105,7 +98,7 @@ export function initDepecheModeKit() {
       osc.disconnect();
       filter.disconnect();
       gainNode.disconnect();
-      onended();
+      if (onended) onended();
     }, (duration + release) * 1000 + 100);
 
     return { node: gainNode };
@@ -155,7 +148,7 @@ export function initDepecheModeKit() {
       osc2.disconnect();
       filter.disconnect();
       gainNode.disconnect();
-      onended();
+      if (onended) onended();
     }, (duration + release) * 1000 + 100);
 
     return { node: gainNode };
