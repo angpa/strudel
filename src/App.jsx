@@ -14,6 +14,40 @@ export default function App() {
   ]);
   const editorRef = useRef(null);
 
+  React.useEffect(() => {
+    try {
+      audioSystem.init();
+    } catch (err) {
+      console.error('Failed to init audioSystem', err);
+    }
+  }, []);
+
+  // Update Strudel engine dynamically when tracks change
+  React.useEffect(() => {
+    if (!editorRef.current || !editorRef.current.editor) return;
+
+    // Generate Strudel code
+    let code = `// ════ GENERATED DAW ENGINE ════\n\n`;
+    const trackNames = [];
+
+    tracks.forEach((track, i) => {
+      // Build the pattern string: "<[step1] [step2]>"
+      const patternInner = track.steps.map(step => `[${step.join(',')}]`).join(' ');
+      const trackVarName = `track_${i}`;
+      trackNames.push(trackVarName);
+      
+      code += `const ${trackVarName} = note("<${patternInner}>").s("${track.instrument}").gain(${track.gain});\n`;
+    });
+
+    code += `\nconst master = stack(${trackNames.join(', ')}).cpm(28.25);\nmaster\n`;
+    
+    // Inject and evaluate silently if playing
+    editorRef.current.editor.code = code;
+    if (isPlaying) {
+      editorRef.current.editor.evaluate();
+    }
+  }, [tracks, isPlaying]);
+
   return (
     <div className="min-h-screen bg-[#020205] text-slate-300 font-sans selection:bg-indigo-500/30">
       {/* BACKGROUND DECORATION */}
@@ -89,9 +123,17 @@ export default function App() {
         </div>
       </main>
 
-      {/* STRUDEL ENGINE (HIDDEN) */}
-      <div className="sr-only">
-        <strudel-editor ref={editorRef}></strudel-editor>
+      {/* STRUDEL ENGINE (RESTORED TO VIEW) */}
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl blur-xl transition-all opacity-50"></div>
+          <div className="relative rounded-xl overflow-hidden shadow-2xl bg-[#0c0c16]">
+            <strudel-editor 
+                ref={editorRef} 
+                style={{ display: 'none' }}
+              ></strudel-editor>
+          </div>
+        </div>
       </div>
     </div>
   );
