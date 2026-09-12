@@ -17,82 +17,35 @@
         align-items: center;
         padding: 2rem 1rem;
       }
-      .header {
-        text-align: center;
-        margin-bottom: 1.5rem;
-      }
+      .header { text-align: center; margin-bottom: 1.5rem; }
       h1 {
-        font-size: 1.8rem;
-        font-weight: 700;
+        font-size: 1.8rem; font-weight: 700;
         background: linear-gradient(90deg, #a78bfa, #818cf8, #6366f1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         margin-bottom: 0.3rem;
       }
       .subtitle { color: #666; font-size: 0.85rem; font-weight: 300; }
-      .controls {
-        display: flex;
-        gap: 12px;
-        margin-bottom: 1.2rem;
-        align-items: center;
-      }
+      .controls { display: flex; gap: 12px; margin-bottom: 1.2rem; align-items: center; }
       button {
-        padding: 10px 28px;
-        font-size: 0.95rem;
-        cursor: pointer;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-family: 'Inter', sans-serif;
-        transition: all 0.2s ease;
-        letter-spacing: 0.5px;
+        padding: 10px 28px; font-size: 0.95rem; cursor: pointer; border: none;
+        border-radius: 8px; font-weight: 600; font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease; letter-spacing: 0.5px;
       }
       button:hover { transform: translateY(-1px); }
       button:active { transform: translateY(0); }
-      #play {
-        background: linear-gradient(135deg, #4ade80, #22c55e);
-        color: #0a0a0f;
-        box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
-      }
-      #stop {
-        background: linear-gradient(135deg, #f87171, #ef4444);
-        color: white;
-        box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
-      }
-      .section-label {
-        color: #888;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 0.5rem;
-      }
+      #play { background: linear-gradient(135deg, #4ade80, #22c55e); color: #0a0a0f; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3); }
+      #stop { background: linear-gradient(135deg, #f87171, #ef4444); color: white; box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3); }
+      .section-label { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; }
       textarea {
-        width: 100%;
-        max-width: 800px;
-        height: 520px;
+        width: 100%; max-width: 820px; height: 600px;
         font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-        font-size: 0.85rem;
-        line-height: 1.6;
-        padding: 20px;
-        background: rgba(15, 15, 25, 0.9);
-        color: #a8ff60;
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 12px;
-        resize: vertical;
-        tab-size: 2;
-        backdrop-filter: blur(10px);
+        font-size: 0.82rem; line-height: 1.55; padding: 20px;
+        background: rgba(15, 15, 25, 0.9); color: #a8ff60;
+        border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px;
+        resize: vertical; tab-size: 2; backdrop-filter: blur(10px);
       }
-      textarea:focus {
-        outline: none;
-        border-color: rgba(99, 102, 241, 0.5);
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
-      }
-      #status {
-        margin-top: 1rem;
-        font-size: 0.8rem;
-        color: #555;
-        transition: color 0.3s;
-      }
+      textarea:focus { outline: none; border-color: rgba(99, 102, 241, 0.5); box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+      #status { margin-top: 1rem; font-size: 0.8rem; color: #555; transition: color 0.3s; }
       #status.playing { color: #4ade80; }
       #status.error { color: #f87171; }
     </style>
@@ -102,167 +55,182 @@
       <h1>🎹 Enjoy The Silence</h1>
       <p class="subtitle">Depeche Mode · Martin Gore · Partitura completa en Strudel</p>
     </div>
-
     <div class="controls">
       <button id="play">▶ Play</button>
       <button id="stop">■ Stop</button>
     </div>
-
     <p class="section-label">Código Strudel — editable en vivo</p>
-
-    <textarea id="code" spellcheck="false">// ═══════════════════════════════════════════════
+    <textarea id="code" spellcheck="false">// ═════════════════════════════════════════════════
 // Enjoy the Silence — Depeche Mode (Martin Gore)
-// Partitura completa · D Major · Allegro ~113 BPM
-// ═══════════════════════════════════════════════
-
-// La partitura tiene estas secciones:
-//   Intro (c.1-3) → Intro pad (c.4-7) → Segno/Pad (c.8-12)
-//   → Verse (c.13-18) → Chorus (c.19-29) → Coda/Outro (c.30-37)
+// D Major · 4/4 · Allegro (~113 BPM)
+// Transcripción completa: 37 compases, 2 páginas
+// ═════════════════════════════════════════════════
+// cpm(28.25) = 113 BPM / 4 beats = 1 ciclo por compás
 
 stack(
 
-  // ─── MANO DERECHA (treble) ───────────────────
-
+  // ═══ MANO DERECHA (acordes + melodía) ═══════
   cat(
-    // ── Intro (compases 1-3): acordes con ritmo punteado ──
-    // c.1: D dotted-8th pattern
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4]",
-    "[d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4]",
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4]",
+    // ── Intro (c.1-4): patrón punteado ──
+    // negra-con-punto [A4,D4,Fis4], corchea [A4,D4,Fis4], blanca [A4,D4]
+    "[a4,d4,fis4]@3 [a4,d4,fis4] [a4,d4]@4",     // c.1
+    "[a4,d4,fis4]@3 [a4,d4,fis4] [a4,d4]@4",     // c.2
+    "[a4,d4,fis4]@3 [a4,d4,fis4] [a4,d4]@4",     // c.3
+    "[a4,d4,fis4]@3 [a4,d4,fis4] [a4,d4] [d4]",  // c.4
 
-    // ── Intro pad (compases 4-7): acordes sostenidos ──
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4]",
-    // c.5-7: whole note chords (pads)
-    "[d4,fis4,a4,d5]", "[d4,fis4,a4,d5]", "[d4,fis4,a4,d5]",
+    // ── Pad sostenido (c.5-7): acordes enteros ──
+    "[d4,fis4,a4,d5]",  // c.5
+    "[d4,fis4,a4,d5]",  // c.6
+    "[d4,fis4,a4,d5]",  // c.7
 
-    // ── Segno section (compases 8-12): pads largos ──
-    "[d4,fis4,a4,d5]", "[d4,fis4,a4,d5]",
-    "[d4,fis4,a4,d5]", "[d4,fis4,a4,d5]",
+    // ── Segno: pads largos (c.8-12) ──
+    "[d4,fis4,a4,d5]",  // c.8
+    "[d4,fis4,a4,d5]",  // c.9
+    "[d4,fis4,a4,d5]",  // c.10
+    "[d4,fis4,a4,d5]",  // c.11
+    "[d4,fis4,a4,d5]",  // c.12
+
+    // ── Verso (c.13-18): acordes rítmicos con movimiento ──
+    // c.13: 8va-rest, [B3,D4,Fis4] corchea, [B3,D4,Fis4]. punteada,
+    //        [A3,D4,E4] [A3,D4,Fis4] [A3,D4,Fis4] negras
+    "~ [b3,d4,fis4] [b3,d4,fis4]@3 [[a3,d4,e4] [a3,d4,fis4] [a3,d4,fis4]]",
+    // c.14: natural-sign en C -> C4 natural (no C#)
+    "~ [c4,e4,fis4] [c4,e4,fis4]@3 [[b3,e4] [b3,d4,fis4] [b3,d4,fis4]]",
+    // c.15: pickup + D#4 cromático
+    "~ [b3,d4,fis4] [b3,d4,fis4] [dis4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.16: patrón repetido
+    "[b3,d4,fis4]@3 [b3,d4,fis4] [a3,d4,e4] [a3,d4,fis4] [a3,d4,fis4] [b3,d4,fis4]",
+    // c.17: con C natural otra vez
+    "~ [b3,e4,fis4] [b3,e4,fis4]@3 [[b3,d4,e4] [b3,d4,fis4] [b3,d4,fis4]]",
+    // c.18: resolución con C natural
+    "~ [c4,e4,fis4] [c4,e4,fis4]@3 [[b3,d4,e4] [b3,d4,fis4] [b3,d4,fis4]]",
+
+    // ── Estribillo (c.19-21): acordes densos ──
+    // c.19: pickup + acordes 8va repetidos
+    "~ [b3,d4,fis4] [d4,fis4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.20: acordes punteados densos
+    "[b3,d4,fis4]@3 [b3,d4,fis4] [d4,fis4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.21: pickup + acordes con movimiento
+    "~ [b3,d4,fis4] [b3,d4,fis4]@3 [a3,d4,fis4] [a3,d4,fis4] [a3,d4,fis4]",
+
+    // c.22: acordes punteados + resolución
+    "[b3,d4,fis4]@3 [b3,d4,fis4] [d4,fis4] [a3,d4,fis4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.23: dotted half chords
+    "[d4,fis4,a4]@3 [d4,fis4] [d4,fis4,a4] [d4,fis4,b4]",
+    // c.24: pickup + dense chords
+    "~ [b3,d4,fis4] [b3,d4,fis4]@3 [a3,d4,fis4] [a3,d4,fis4] [a3,d4,fis4]",
+    // c.25: dotted half resolución
+    "[b3,d4,fis4] [b3,d4,fis4] [b3,d4,a4]@3 ~",
+
+    // ── Puente: tresillo + modulación (c.26-29) ──
+    // c.26: acordes punteados repetidos
+    "[b3,d4,fis4]@3 [b3,d4,fis4] [d4,fis4] [a3,d4,fis4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.27: TRESILLOS - 6 acordes en un compás
+    "[d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
+    // c.28: Bb modulación! con naturales y bemoles
+    "[c4,e4,bb4] [c4,e4]@3 [c4,e4,bb4]@3 ~",
+    // c.29: resolución a D mayor (acorde entero con fermata)
     "[d4,fis4,a4,d5]",
 
-    // ── Verse (compases 13-18): melodía con acordes ──
-    // c.13
-    "~ [d4,fis4,a4] [d4,fis4,a4] [e4,a4] [d4,fis4] [d4,fis4]",
-    // c.14
-    "[d4,fis4,a4] [d4,fis4,a4] [e4,a4] [d4,fis4] [d4,fis4]",
-    // c.15
-    "[d4,fis4,a4] [d4,fis4,a4] [dis4,fis4,a4] [e4,a4] [d4,fis4]",
-    // c.16
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4] [e4,a4] [d4,fis4]",
-    // c.17
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4] [e4,a4] [d4,fis4]",
-    // c.18
-    "~ [d4,fis4,a4] [d4,fis4] [d4,fis4] [d4,fis4] [d4,fis4]",
-
-    // ── Chorus (compases 19-25): acordes densos ──
-    // c.19
-    "~ [d4,fis4,a4] [d4,fis4] [d4,fis4,a4] [d4,fis4,a4]",
-    // c.20
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-    // c.21
-    "~ [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-    // c.22
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-    // c.23
-    "[d4,fis4,a4] [d4,fis4,a4] [d4,g4,a4] [d4,fis4,a4]",
-    // c.24
-    "~ [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-    // c.25
-    "[d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-
-    // ── Bridge/Triplets (compases 26-29) ──
-    "[d4,fis4,a4] ~ [d4,fis4,a4] [d4,fis4,a4]",
-    "[d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4] [d4,fis4,a4]",
-    "[c4,e4,g4,bb4] ~ [c4,e4,g4] [c4,e4,g4,bb4]",
-    "[d4,fis4,a4,d5]",
-
-    // ── Coda/Outro (compases 30-37): ritmo punteado que se repite ──
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~",
-    "~ [b3,d4] [b3,d4] ~"
+    // ── Coda/Outro (c.30-37): patrón repetido hasta fade ──
+    // Patrón: silencio, B3 corchea, D4 corchea (repetido 2x por compás)
+    "~ [b3 d4] ~ [b3 d4]",  // c.30
+    "~ [b3 d4] ~ [b3 d4]",  // c.31
+    "~ [b3 d4] ~ [b3 d4]",  // c.32
+    "~ [b3 d4] ~ [b3 d4]",  // c.33
+    "~ [b3 d4] ~ [b3 d4]",  // c.34
+    "~ [b3 d4] ~ [b3 d4]",  // c.35
+    "~ [b3 d4] ~ [b3 d4]",  // c.36
+    "~ [b3 d4] ~ [b3 d4]"   // c.37
   )
   .s("triangle")
-  .cutoff(2200)
-  .attack(0.01)
-  .decay(0.4)
-  .sustain(0.3)
-  .release(0.5)
-  .gain(0.4)
-  .room(0.4)
-  .delay(0.15)
-  .delaytime(0.375),
+  .cutoff(2200).resonance(4)
+  .attack(0.01).decay(0.35).sustain(0.35).release(0.5)
+  .gain(0.4).room(0.35).delay(0.15).delaytime(0.33),
 
-  // ─── MANO IZQUIERDA (bass) ──────────────────
 
+  // ═══ MANO IZQUIERDA (bajo) ═════════════════
   cat(
-    // ── Intro (compases 1-3) ──
-    "~ d2 [d2 e2] d2",
-    "~ d2 [d2 e2] d2",
-    "~ d2 [d2 e2] d2",
+    // ── Intro (c.1-4): D pedal + movimiento D-E ──
+    // Patrón: silencio, D3 negra, E3 corchea, D3 E3 (sobre pedal D2)
+    "[~ d3 e3 d3]",         // c.1
+    "[~ d3 e3 d3]",         // c.2
+    "[~ d3 e3 d3]",         // c.3
+    "[~ d3 e3 d3]",         // c.4
 
-    // ── Intro pad (compases 4-7) ──
-    "~ d2 [d2 e2] d2",
-    "d2 ~ ~ ~",
-    "d2 ~ ~ ~",
-    "d2 ~ ~ ~",
+    // ── Pad (c.5-7): pedal D con patrón rítmico ──
+    // Patrón: silencio, D3 corchea, B2 corchea, D3 corchea
+    "[~ d3 [b2 d3]]",       // c.5
+    "[~ d3 [b2 d3]]",       // c.6
+    "[~ d3 [b2 d3]]",       // c.7
 
-    // ── Segno (compases 8-12): bajo con octavas ──
-    "[~ d2] [b2 d3] ~",
-    "[~ d2] [b2 d3] ~",
-    "[~ d2] [b2 d3] ~",
-    "[~ d2] [b2 d3] ~",
-    "[~ d2] [b2 d3] ~",
+    // ── Segno (c.8-12): bajo con 8vas ──
+    "[~ d3 [b2 d3]]",       // c.8
+    "[~ d3 [b2 d3]]",       // c.9
+    "[~ d3 [b2 d3]]",       // c.10
+    "[~ d3 [b2 d3]]",       // c.11
+    "[~ d3 [b2 d3]]",       // c.12
 
-    // ── Verse (compases 13-18): bajo rítmico ──
-    "~ [d2 e2] d2 e2",
-    "[d3 ~] [d2 e2] d2 e2",
-    "[d3 ~] [d2 e2] d2 e2",
-    "[d3 ~] [d2 e2] d2 e2",
-    "[d3 ~] [d2 e2] d2 e2",
-    "~ [d2 e2] d2 [e2 d2]",
+    // ── Verso (c.13-18): bajo más activo ──
+    // c.13: rest, D2, 8th-D3, D2, D3
+    "~ d2 [d3 d2] d3",
+    // c.14: rest, E2, dotted-E3, E2, E3
+    "~ e2 [e3 e2] e3",
+    // c.15: rest, D2, 8th D3, 8th E3, D3
+    "~ d2 [d3 e3] d3",
+    // c.16: rest, D2, 8th-D3, D2, D3
+    "~ d2 [d3 d2] d3",
+    // c.17: rest, E2, dotted-E3, E2, E3
+    "~ e2 [e3 e2] e3",
+    // c.18: rest, E2, E3, E2, E3
+    "~ e2 [e3 e2] e3",
 
-    // ── Chorus (compases 19-25) ──
-    "~ d2 [d2 b2] d2",
-    "~ [d3 ~] [d2 d3] [d2 d3]",
-    "~ d2 [g2 ~] d2",
-    "~ d2 [d3 ~] d2",
-    "~ d2 [d3 ~] d2",
-    "~ d2 [d3 ~] [d2 d3]",
-    "[d2 d3] [d2 d3] [d2 d3] [d2 d3]",
+    // ── Estribillo (c.19-21) ──
+    // c.19: rest, D2, 8th D3, D2
+    "~ d2 [d3 d2] d3",
+    // c.20: rest, D3, half D2, D3
+    "~ [d3 d2@3] d3",
+    // c.21: rest, A2, dotted-half, A2
+    "~ a2 [a2@3 a3]",
 
-    // ── Bridge (compases 26-29) ──
-    "~ d2 [d3 ~] d2",
-    "~ [d3 ~] [d2 d3] d2",
-    "d2 [bb1 ~] [bb1 ~] [bb1 ~]",
-    "d2 ~ ~ ~",
+    // c.22: D bajo + movimiento
+    "~ d2 [d3 d2] d3",
+    // c.23: D pedal sostenido
+    "[d2@3 d3]",
+    // c.24: E bajo (subdominante)
+    "~ [e2 e3 e2 e3]",
+    // c.25: A bajo
+    "[a2 e2 a2 a3]",
 
-    // ── Coda/Outro (compases 30-37): bajo punteado ──
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2",
-    "~ [d2 ~] [b2 ~] d2"
+    // ── Puente (c.26-29) ──
+    // c.26: D bajo
+    "~ d2 [d3 d2] d3",
+    // c.27: D bajo + movimiento al puente
+    "~ [d3 d2@3] d3",
+    // c.28: Bb! bajo con bemoles
+    "d3 [bb2 bb2@3] bb2",
+    // c.29: resolución a D (nota larga)
+    "d2",
+
+    // ── Coda (c.30-37): bajo punteado ──
+    // Patrón: rest, D2 punteada, D3 negra
+    "[~ d2@3 d3]",   // c.30
+    "[~ d2@3 d3]",   // c.31
+    "[~ d2@3 d3]",   // c.32
+    "[~ d2@3 d3]",   // c.33
+    "[~ d2@3 d3]",   // c.34
+    "[~ d2@3 d3]",   // c.35
+    "[~ d2@3 d3]",   // c.36
+    "[~ d2@3 d3]"    // c.37
   )
   .s("sawtooth")
-  .cutoff(500)
-  .resonance(6)
-  .decay(0.25)
-  .sustain(0.4)
-  .release(0.3)
-  .gain(0.5)
+  .cutoff(450).resonance(5)
+  .attack(0.01).decay(0.3).sustain(0.45).release(0.3)
+  .gain(0.55)
 
-).cpm(113)</textarea>
+).cpm(28.25)</textarea>
 
     <p id="status">Listo. Presiona Play para escuchar.</p>
-
     <script type="module" src="/main.js"></script>
   </body>
 </html>
