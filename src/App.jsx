@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import TrackMixer from './components/TrackMixer';
 import SnapshotManager from './components/SnapshotManager';
 import SpectrumCanvas from './components/SpectrumCanvas';
+import AccordionKeyboard from './components/AccordionKeyboard';
 import { audioSystem } from './audioSystem';
 import { Play, Square, Settings2 } from 'lucide-react';
 
@@ -73,6 +74,20 @@ export default function App() {
     }]);
   };
 
+  const handleNoteSelectFromKeyboard = (noteStr) => {
+    if (!tracks || tracks.length === 0) return;
+    setTracks(prevTracks => {
+      const updated = [...prevTracks];
+      const targetIndex = updated.findIndex(t => t.id === 'synth' || t.instrument === 'supersaw' || t.instrument === 'piano');
+      const idx = targetIndex !== -1 ? targetIndex : updated.length - 1;
+      
+      const targetTrack = { ...updated[idx] };
+      targetTrack.steps = [...targetTrack.steps, [noteStr]];
+      updated[idx] = targetTrack;
+      return updated;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[#020205] text-slate-300 font-sans selection:bg-indigo-500/30">
       {/* BACKGROUND DECORATION */}
@@ -83,9 +98,9 @@ export default function App() {
 
       <main className="relative max-w-7xl mx-auto px-6 py-8">
         {/* TOP BAR */}
-        <header className="flex justify-between items-center mb-12">
+        <header className="flex justify-between items-center mb-8">
         {/* HEADER CONTROLS */}
-        <div className="flex flex-col md:flex-row justify-between items-center bg-black/40 p-4 lg:p-6 rounded-2xl border border-white/5 backdrop-blur-md mb-8 gap-6 shadow-2xl">
+        <div className="flex flex-col md:flex-row justify-between items-center bg-black/40 p-4 lg:p-6 rounded-2xl border border-white/5 backdrop-blur-md w-full gap-6 shadow-2xl">
           <div className="flex items-center gap-6">
             {/* Play Button */}
             <div className="relative group">
@@ -135,9 +150,18 @@ export default function App() {
             </div>
           </div>
         </div>
+        </header>
+
+        {/* ACCORDION KEYBOARD & HARMONIC ASSISTANT */}
+        <AccordionKeyboard 
+          keyNote={rootNote} 
+          scaleType={scaleType} 
+          onSelectNote={handleNoteSelectFromKeyboard} 
+        />
 
         {/* MAIN GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
           {/* LEFT: MIXER */}
           <div className="lg:col-span-3 space-y-6">
             <div className="flex justify-between items-center mb-4">
