@@ -1,5 +1,8 @@
 import { expect, test } from 'vitest';
-import { mutateNote, getNoteColor, SCALES, getScaleNotes, getHarmonicSuggestions, getMunsellColor, getTonnetzGrid } from './harmonyEngine.js';
+import { 
+  mutateNote, getNoteColor, SCALES, getScaleNotes, getHarmonicSuggestions, 
+  getMunsellColor, getTonnetzGrid, getLeviGraphData, getTristanTonnetzData 
+} from './harmonyEngine.js';
 
 test('mutates note up the scale (C Major)', () => {
   // C Major: C, D, E, F, G, A, B
@@ -72,6 +75,25 @@ test('getTonnetzGrid calculates 2D Tonnetz lattice with fifths and thirds', () =
   const thirdNode = grid.find(n => n.x === 0 && n.y === 1);
   expect(thirdNode.pitch).toBe('e');
 });
+
+test('getLeviGraphData returns 24 vertices (12 Major triads, 12 Minor triads)', () => {
+  const levi = getLeviGraphData();
+  expect(levi.nodes.length).toBe(24);
+  const majorTriads = levi.nodes.filter(n => n.type === 'major');
+  const minorTriads = levi.nodes.filter(n => n.type === 'minor');
+  expect(majorTriads.length).toBe(12);
+  expect(minorTriads.length).toBe(12);
+});
+
+test('getTristanTonnetzData returns dominant 7th and half-diminished 7th chord nodes', () => {
+  const tristan = getTristanTonnetzData();
+  expect(tristan.nodes.length).toBe(24);
+  const dom7s = tristan.nodes.filter(n => n.type === 'dom7');
+  const halfDims = tristan.nodes.filter(n => n.type === 'halfDim');
+  expect(dom7s.length).toBe(12);
+  expect(halfDims.length).toBe(12);
+});
+
 
 
 

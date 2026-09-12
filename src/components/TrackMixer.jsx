@@ -1,10 +1,12 @@
 import React from 'react';
 import { mutateNote, getNoteColor } from '../utils/harmonyEngine';
 
-const AVAILABLE_INSTRUMENTS = [
-  'piano', 'supersaw', 'sawtooth', 'sine', 'tb303', 'bd', 'sd', 'hh', 'cp',
-  'alan_wilder_choir', 'martin_gore_guitar', 'peter_gordeno_bass', 'christian_eigner_kick', 'christian_eigner_snare', 'christian_eigner_hihat'
-];
+const CATEGORIZED_INSTRUMENTS = {
+  "Sintetizadores Nativos": ['piano', 'supersaw', 'sawtooth', 'sine', 'square', 'triangle', 'pulse', 'tb303', 'fm', 'sub'],
+  "Soundfonts Extendidos (GM)": ['gm_piano', 'marimba', 'accordion', 'church_organ', 'reed_organ', 'acoustic_guitar', 'electric_guitar', 'electric_bass', 'violin', 'cello', 'trumpet', 'trombone', 'flute', 'alto_sax'],
+  "Batería y Percusión": ['bd', 'sd', 'hh', 'cp', 'rim', 'crash', 'ride', 'tom', 'synth_drum'],
+  "Expansión Depeche Mode": ['alan_wilder_choir', 'martin_gore_guitar', 'peter_gordeno_bass', 'christian_eigner_kick', 'christian_eigner_snare', 'christian_eigner_hihat']
+};
 
 export default function TrackMixer({ tracks, setTracks, rootNote, scaleType }) {
   
@@ -51,7 +53,7 @@ export default function TrackMixer({ tracks, setTracks, rootNote, scaleType }) {
             ×
           </button>
 
-          <div className="w-32 flex-shrink-0 flex flex-col gap-1">
+          <div className="w-36 flex-shrink-0 flex flex-col gap-1">
             <h3 className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{track.id}</h3>
             <select 
               value={track.instrument}
@@ -60,13 +62,18 @@ export default function TrackMixer({ tracks, setTracks, rootNote, scaleType }) {
                 newTracks[trackIndex].instrument = e.target.value;
                 setTracks(newTracks);
               }}
-              className="text-[10px] bg-black/40 border border-white/10 text-slate-300 rounded outline-none p-1 w-full"
+              className="text-[10px] bg-black/60 border border-white/10 text-slate-200 rounded outline-none p-1 w-full font-mono"
             >
-              {AVAILABLE_INSTRUMENTS.map(inst => (
-                <option key={inst} value={inst}>{inst}</option>
+              {Object.entries(CATEGORIZED_INSTRUMENTS).map(([category, insts]) => (
+                <optgroup key={category} label={category} className="bg-slate-900 text-amber-400 font-bold">
+                  {insts.map(inst => (
+                    <option key={inst} value={inst} className="bg-slate-950 text-slate-200 font-normal">{inst}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>
+
 
           <div className="flex-1 flex gap-2 overflow-x-auto min-w-[200px] items-center">
             {track.steps.map((stepNotes, stepIndex) => (

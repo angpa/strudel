@@ -208,3 +208,104 @@ export function getTonnetzGrid(cols = 5, rows = 5, centerPitch = 'c') {
 
   return nodes;
 }
+
+export function getLeviGraphData() {
+  const pitches = ['c', 'db', 'd', 'eb', 'e', 'f', 'gb', 'g', 'ab', 'a', 'bb', 'b'];
+  const nodes = [];
+  const edges = [];
+
+  // 12 Major triads & 12 Minor triads (Boland & Hughston 2026, Sterneck D222)
+  pitches.forEach((root, idx) => {
+    // Major triad: root, root+4, root+7
+    const rootMidi = NOTE_OFFSETS[root];
+    const m3_1 = OFFSET_TO_NOTE[(rootMidi + 4) % 12];
+    const m5_1 = OFFSET_TO_NOTE[(rootMidi + 7) % 12];
+    const majId = `${root}_M`;
+
+    nodes.push({
+      id: majId,
+      name: `${root.toUpperCase()} M`,
+      root,
+      type: 'major',
+      pitches: [root, m3_1, m5_1],
+      color: getMunsellColor(root, 65)
+    });
+
+    // Minor triad: root, root+3, root+7
+    const m3_2 = OFFSET_TO_NOTE[(rootMidi + 3) % 12];
+    const minId = `${root}_m`;
+
+    nodes.push({
+      id: minId,
+      name: `${root.toUpperCase()} m`,
+      root,
+      type: 'minor',
+      pitches: [root, m3_2, m5_1],
+      color: getMunsellColor(root, 35)
+    });
+  });
+
+  // Conexiones de la red de Levi entre triadas que comparten 2 notas (Operaciones Neo-Riemannianas P, L, R)
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const n1 = nodes[i];
+      const n2 = nodes[j];
+      if (n1.type !== n2.type) {
+        const commonPitches = n1.pitches.filter(p => n2.pitches.includes(p));
+        if (commonPitches.length >= 2) {
+          edges.push({ from: n1.id, to: n2.id, common: commonPitches });
+        }
+      }
+    }
+  }
+
+  return { nodes, edges };
+}
+
+export function getTristanTonnetzData() {
+  const pitches = ['c', 'db', 'd', 'eb', 'e', 'f', 'gb', 'g', 'ab', 'a', 'bb', 'b'];
+  const nodes = [];
+  const edges = [];
+
+  // Acordes de Género Tristan (Dominante 7 y Semidisminuido 7 - Configuración Sterneck D228)
+  pitches.forEach((root) => {
+    const rootMidi = NOTE_OFFSETS[root];
+    const domId = `${root}_dom7`;
+    const halfId = `${root}_halfDim`;
+
+    nodes.push({
+      id: domId,
+      name: `${root.toUpperCase()}7`,
+      root,
+      type: 'dom7',
+      label: '7ma Dominante',
+      pitches: [root, OFFSET_TO_NOTE[(rootMidi + 4) % 12], OFFSET_TO_NOTE[(rootMidi + 7) % 12], OFFSET_TO_NOTE[(rootMidi + 10) % 12]],
+      color: getMunsellColor(root, 60)
+    });
+
+    nodes.push({
+      id: halfId,
+      name: `${root.toUpperCase()}ø7`,
+      root,
+      type: 'halfDim',
+      label: 'Acorde Tristan (ø7)',
+      pitches: [root, OFFSET_TO_NOTE[(rootMidi + 3) % 12], OFFSET_TO_NOTE[(rootMidi + 6) % 12], OFFSET_TO_NOTE[(rootMidi + 10) % 12]],
+      color: getMunsellColor(root, 40)
+    });
+  });
+
+  // Conexiones de voz Wagnerianas (Octaciclos de Sterneck D228)
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const n1 = nodes[i];
+      const n2 = nodes[j];
+      const common = n1.pitches.filter(p => n2.pitches.includes(p));
+      if (common.length >= 2) {
+        edges.push({ from: n1.id, to: n2.id, common });
+      }
+    }
+  }
+
+  return { nodes, edges };
+}
+
