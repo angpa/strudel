@@ -309,3 +309,41 @@ export function getTristanTonnetzData() {
   return { nodes, edges };
 }
 
+export function getHarmonicThreadConnections(activeNoteStr, rootNote = 'c', scaleType = 'major') {
+  if (!activeNoteStr || activeNoteStr === '~') return [];
+
+  const match = activeNoteStr.match(/^([a-g]s?b?)(\d)$/i);
+  if (!match) return [];
+
+  const noteName = match[1].toLowerCase();
+  const octave = parseInt(match[2], 10);
+  const connections = [];
+
+  // 1. Paso Siguiente (Scale Step +1)
+  const nextStep = mutateNote(activeNoteStr, 1, rootNote, scaleType);
+  if (nextStep && nextStep !== activeNoteStr) {
+    connections.push({ fromNote: activeNoteStr, toNote: nextStep, relation: 'Siguiente Paso', type: 'step' });
+  }
+
+  // 2. Tercera en Escala (+2 pasos)
+  const third = mutateNote(activeNoteStr, 2, rootNote, scaleType);
+  if (third && third !== activeNoteStr) {
+    connections.push({ fromNote: activeNoteStr, toNote: third, relation: '3ra Armónica', type: 'third' });
+  }
+
+  // 3. Quinta en Escala (+4 pasos)
+  const fifth = mutateNote(activeNoteStr, 4, rootNote, scaleType);
+  if (fifth && fifth !== activeNoteStr) {
+    connections.push({ fromNote: activeNoteStr, toNote: fifth, relation: '5ta Consonante', type: 'fifth' });
+  }
+
+  // 4. Octava Superior (+12 semitonos)
+  const octaveUp = `${noteName}${octave + 1}`;
+  if (octaveUp) {
+    connections.push({ fromNote: activeNoteStr, toNote: octaveUp, relation: '8va Octava', type: 'octave' });
+  }
+
+  return connections;
+}
+
+

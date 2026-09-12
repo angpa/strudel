@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest';
 import { 
   mutateNote, getNoteColor, SCALES, getScaleNotes, getHarmonicSuggestions, 
-  getMunsellColor, getTonnetzGrid, getLeviGraphData, getTristanTonnetzData 
+  getMunsellColor, getTonnetzGrid, getLeviGraphData, getTristanTonnetzData,
+  getHarmonicThreadConnections
 } from './harmonyEngine.js';
 
 test('mutates note up the scale (C Major)', () => {
@@ -93,6 +94,17 @@ test('getTristanTonnetzData returns dominant 7th and half-diminished 7th chord n
   expect(dom7s.length).toBe(12);
   expect(halfDims.length).toBe(12);
 });
+
+test('getHarmonicThreadConnections returns target notes connected to active note by white threads', () => {
+  // Pressed note: c3 in C Major -> target threads should connect to e3 (3rd), g3 (5th), d3 (next), c4 (octave)
+  const threads = getHarmonicThreadConnections('c3', 'c', 'major');
+  expect(threads.length).toBeGreaterThan(0);
+  const targetNotes = threads.map(t => t.toNote);
+  expect(targetNotes).toContain('e3');
+  expect(targetNotes).toContain('g3');
+  expect(targetNotes).toContain('c4');
+});
+
 
 
 
