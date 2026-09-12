@@ -90,38 +90,26 @@ stack(
   // ═══ ALAN WILDER (Choir Pad) ═══
   note("<[eb3,gb3,bb3] [b2,eb3,gb3] [gb3,bb3,db4] [db3,f3,ab3]>")
     .s("alan_wilder_choir")
-    .cutoff(1200)
+    .cutoff(1500)
     .room(0.8)
     .gain(0.6),
 
   // ═══ MARTIN GORE (Guitarra Principal) ═══
-  // Melodía principal usando el sampler de guitarra
-  cat(
-    "~ ~ bb4 bb4",           
-    "ab4 gb4 ~ ~",           
-    "~ ~ ab4 bb4",           
-    "~ ~ ~ ~"
-  )
-  .s("martin_gore_guitar")
-  .delay(0.25).delaytime(0.33)
-  .gain(0.8)
-  .room(0.4),
+  note("<[~ ~ bb4 bb4] [ab4 gb4 ~ ~] [~ ~ ab4 bb4] [~ ~ ~ ~]>")
+    .s("martin_gore_guitar")
+    .delay(0.25).delaytime(0.33)
+    .gain(0.8)
+    .room(0.4),
 
   // ═══ PETER GORDENO (Bajo Sintetizado) ═══
-  // Raíces pulsando en corcheas
   note("<[eb2 eb2 eb2 eb2] [b1 b1 b1 b1] [gb2 gb2 gb2 gb2] [db2 db2 db2 db2]>")
     .s("peter_gordeno_bass")
-    .cutoff(800)
+    .cutoff(1000)
     .gain(0.7),
 
   // ═══ CHRISTIAN EIGNER (Batería Acústica / Híbrida) ═══
-  // Kick en 1 y 3 (o four-on-the-floor)
   s("christian_eigner_kick(4,4)").gain(1.0),
-  
-  // Snare en 2 y 4
   s("~ christian_eigner_snare ~ christian_eigner_snare").gain(0.9),
-  
-  // Hi-hats en corcheas (16avos)
   s("christian_eigner_hihat*8").gain(0.5).room(0.1)
 
 ).cpm(28.25)

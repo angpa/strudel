@@ -1,4 +1,4 @@
-import { initStrudel } from '@strudel/web';
+import { initStrudel, getAudioContext } from '@strudel/web';
 import '@strudel/repl';
 
 import { initDepecheModeKit } from './depecheModeKit.js';
@@ -11,15 +11,16 @@ const gitInfo = document.getElementById('git-info');
 const editorEl = document.querySelector('strudel-editor');
 
 // ── Git version badge ──
-gitInfo.innerHTML = `push <span>#${__GIT_COUNT__}</span> · <span>${__GIT_HASH__}</span> · ${__GIT_MESSAGE__}`;
-
-// ── Inicializar Instrumentos Personalizados ──
-initDepecheModeKit();
+if (typeof __GIT_COUNT__ !== 'undefined') {
+  gitInfo.innerHTML = `push <span>#${__GIT_COUNT__}</span> · <span>${__GIT_HASH__}</span> · ${__GIT_MESSAGE__}`;
+}
 
 // ── Inicializar Strudel ──
 statusEl.textContent = 'Inicializando Strudel...';
 
 initStrudel().then(() => {
+  // Inicializar instrumentos Depeche Mode una vez que Strudel está cargado
+  initDepecheModeKit();
   statusEl.textContent = 'Listo. Presiona Play para escuchar.';
 }).catch((err) => {
   statusEl.textContent = 'Error al inicializar: ' + err.message;
@@ -28,9 +29,21 @@ initStrudel().then(() => {
 
 // ── Play ──
 playBtn.addEventListener('click', async () => {
-  if (window.getAudioContext) {
-    window.getAudioContext().resume();
+  try {
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      await ctx.resume();
+    }
+    if (window.getAudioContext) {
+      const wCtx = window.getAudioContext();
+      if (wCtx && wCtx.state === 'suspended') {
+        await wCtx.resume();
+      }
+    }
+  } catch (e) {
+    console.warn('AudioContext resume exception:', e);
   }
+
   if (editorEl && editorEl.editor) {
     statusEl.textContent = '▶ Reproduciendo...';
     statusEl.className = 'playing';
