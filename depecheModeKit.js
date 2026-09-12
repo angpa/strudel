@@ -1,6 +1,13 @@
-import { registerSound, samples, getAudioContext } from '@strudel/web';
-
 export function initDepecheModeKit() {
+  const registerSound = window.registerSound;
+  const samples = window.samples;
+  const getAudioContext = window.getAudioContext;
+
+  if (!registerSound || !samples || !getAudioContext) {
+    console.error("Strudel globals not found on window. Ensure initStrudel() has finished before calling this.");
+    return;
+  }
+
   // ── 1. Alan Wilder Choir (Pad Vocal Sintetizado) ──
   registerSound('alan_wilder_choir', (time, value, onended) => {
     const ctx = getAudioContext();
