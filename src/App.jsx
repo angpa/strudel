@@ -8,9 +8,9 @@ import { Play, Square, Settings2 } from 'lucide-react';
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [tracks, setTracks] = useState([
-    { id: 'bass', instrument: 'peter_gordeno_bass', gain: 0.7, steps: [['eb2'], ['eb2'], ['b1'], ['db2']] },
-    { id: 'synth', instrument: 'alan_wilder_choir', gain: 0.5, steps: [['eb3', 'gb3'], ['b2', 'eb3'], ['gb3', 'bb3'], ['db3', 'f3']] },
-    { id: 'drums', instrument: 'christian_eigner_kick', gain: 0.9, steps: [['~'], ['~'], ['~'], ['~']] }
+    { id: 'bass', instrument: 'peter_gordeno_bass', gain: 0.7, fx: { cutoff: 1000, room: 0, delay: 0 }, steps: [['eb2'], ['eb2'], ['b1'], ['db2']] },
+    { id: 'synth', instrument: 'alan_wilder_choir', gain: 0.5, fx: { cutoff: 1500, room: 0.8, delay: 0 }, steps: [['eb3', 'gb3'], ['b2', 'eb3'], ['gb3', 'bb3'], ['db3', 'f3']] },
+    { id: 'drums', instrument: 'christian_eigner_kick', gain: 0.9, fx: { cutoff: 20000, room: 0.1, delay: 0 }, steps: [['~'], ['~'], ['~'], ['~']] }
   ]);
   const editorRef = useRef(null);
 
@@ -36,7 +36,15 @@ export default function App() {
       const trackVarName = `track_${i}`;
       trackNames.push(trackVarName);
       
-      code += `const ${trackVarName} = note("<${patternInner}>").s("${track.instrument}").gain(${track.gain});\n`;
+      // Parse standard effects
+      let fxString = `.gain(${track.gain})`;
+      if (track.fx && track.fx.cutoff < 20000) fxString += `.cutoff(${track.fx.cutoff})`;
+      if (track.fx && track.fx.room > 0) fxString += `.room(${track.fx.room})`;
+      if (track.fx && track.fx.delay > 0) {
+        fxString += `.delay(${track.fx.delay}).delaytime(0.25)`; // Default delaytime for simplicity
+      }
+      
+      code += `const ${trackVarName} = note("<${patternInner}>").s("${track.instrument}")${fxString};\n`;
     });
 
     code += `\nconst master = stack(${trackNames.join(', ')}).cpm(28.25);\nmaster\n`;
